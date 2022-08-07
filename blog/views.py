@@ -13,9 +13,10 @@ def hello_world(request):
     last_name = request.GET.get('lastname')
 
     if request.method == 'POST':
-        return Response('Hello, I\'m from Post in FBV')
+        data = request.data
+        return Response({'message': f'Hello, {data.get("name")} {data.get("lastname")} FBV POST'})
 
-    return Response(f'Hello, {name} {last_name} from FBV')
+    return Response({'message': f'Hello, {name} {last_name} from FBV GET'})
 
 
 class HelloWorld(APIView):
@@ -26,7 +27,8 @@ class HelloWorld(APIView):
     def get(self, request):
         name = request.GET.get('name')
         last_name = request.GET.get('lastname')
-        return Response(f'Hello , {name} {last_name} from CBV')
+        return Response({'message': f'Hello , {name} {last_name} from CBV GET'})
 
     def post(self, request):
-        return Response(f'Hello, I\'m from Post in CBV')
+        data = request.data
+        return Response({'message': f'Hello, {data.get("name")} {data.get("lastname")} in CBV POST'})
