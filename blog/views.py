@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import requests
+
+URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
 
 @api_view(['GET', 'POST'])
@@ -32,3 +35,19 @@ class HelloWorld(APIView):
     def post(self, request):
         data = request.data
         return Response({'message': f'Hello, {data.get("name")} {data.get("lastname")} in CBV POST'})
+
+
+class GetCryptoPrice(APIView):
+    """
+    Return the price of the crypto coin user wants
+    """
+
+    def get(self, request):
+        coin = request.GET.get('coin')
+        response = requests.get(f'https://api.binance.com/api/v3/ticker/price?symbol={coin.upper()}')
+        data = response.json()
+        result = {
+            'symbol': data['symbol'],
+            'price': data['price']
+        }
+        return Response(data=result)
