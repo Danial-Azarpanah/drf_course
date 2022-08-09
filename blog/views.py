@@ -1,8 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
+
+from .serializers import UserSerializer
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -43,11 +47,6 @@ class GetCryptoPrice(APIView):
     """
 
     def get(self, request):
-        coin = request.GET.get('coin')
-        response = requests.get(f'https://api.binance.com/api/v3/ticker/price?symbol={coin.upper()}')
-        data = response.json()
-        result = {
-            'symbol': data['symbol'],
-            'price': data['price']
-        }
-        return Response(data=result)
+        query_set = User.objects.get(id=1)
+        users = UserSerializer(instance=query_set)
+        return Response(data=users.data)
