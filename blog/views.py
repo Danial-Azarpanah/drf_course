@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ArticleSerializer
+from .models import Article
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
 
@@ -50,3 +51,25 @@ class GetCryptoPrice(APIView):
         query_set = User.objects.get(id=1)
         users = UserSerializer(instance=query_set)
         return Response(data=users.data)
+
+
+class ArticleListView(APIView):
+    """
+    View for all articles
+    """
+
+    def get(self, request):
+        articles = Article.objects.all()
+        serializer = ArticleSerializer(instance=articles, many=True)
+        return Response(data=serializer.data)
+
+
+class ArticleDetailView(APIView):
+    """
+    View for a specific article
+    """
+
+    def get(self, request, pk):
+        article = Article.objects.get(id=pk)
+        serializer = ArticleSerializer(instance=article)
+        return Response(data=serializer.data)
