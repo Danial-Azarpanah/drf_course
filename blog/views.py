@@ -73,3 +73,16 @@ class ArticleDetailView(APIView):
         article = Article.objects.get(id=pk)
         serializer = ArticleSerializer(instance=article)
         return Response(data=serializer.data)
+
+
+class AddArticleView(APIView):
+    """
+    View for adding new articles
+    """
+
+    def post(self, request):
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Done'})
+        return Response(serializer.errors)

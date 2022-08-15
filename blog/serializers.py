@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from .models import Article
+
 
 class UserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=70)
@@ -8,7 +10,10 @@ class UserSerializer(serializers.Serializer):
 
 
 class ArticleSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(required=False)
     title = serializers.CharField()
     text = serializers.CharField()
     status = serializers.BooleanField()
+
+    def create(self, validated_data):
+        return Article.objects.create(**validated_data)

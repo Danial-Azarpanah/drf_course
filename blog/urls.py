@@ -7,4 +7,5 @@ urlpatterns = [
     path('crypto', views.GetCryptoPrice.as_view()),
     path('articles', views.ArticleListView.as_view()),
     path('article/<int:pk>', views.ArticleDetailView.as_view()),
+    path('articles/add', views.AddArticleView.as_view()),
 ]
