@@ -9,11 +9,7 @@ class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=100)
 
 
-class ArticleSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=False)
-    title = serializers.CharField()
-    text = serializers.CharField()
-    status = serializers.BooleanField()
-
-    def create(self, validated_data):
-        return Article.objects.create(**validated_data)
+class ArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = '__all__'
