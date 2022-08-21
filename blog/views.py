@@ -83,6 +83,8 @@ class AddArticleView(APIView):
     def post(self, request):
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            instance = serializer.save()
+            instance.status = True
+            instance.save()
             return Response({'message': 'Done'})
         return Response(serializer.errors)
