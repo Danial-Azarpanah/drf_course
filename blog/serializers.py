@@ -10,10 +10,8 @@ class UserSerializer(serializers.Serializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    status = serializers.BooleanField(write_only=True)
 
     class Meta:
         model = Article
         fields = ('id', 'title', 'text', 'status')
-        read_only_fields = ['id']
 
