@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from django.contrib.auth.models import User
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import requests
+from rest_framework import status
 
 from .serializers import UserSerializer, ArticleSerializer
 from .models import Article
@@ -61,7 +60,8 @@ class ArticleListView(APIView):
     def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(instance=articles, many=True)
-        return Response(data=serializer.data)
+        return Response(data=serializer.data,
+                        status=status.HTTP_200_OK)
 
 
 class ArticleDetailView(APIView):
@@ -72,7 +72,8 @@ class ArticleDetailView(APIView):
     def get(self, request, pk):
         article = Article.objects.get(id=pk)
         serializer = ArticleSerializer(instance=article)
-        return Response(data=serializer.data)
+        return Response(data=serializer.data,
+                        status=status.HTTP_200_OK)
 
 
 class AddArticleView(APIView):
@@ -86,8 +87,8 @@ class AddArticleView(APIView):
             instance = serializer.save()
             instance.status = True
             instance.save()
-            return Response({'message': 'Added'})
-        return Response(serializer.errors)
+            return Response({'message': 'Added'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateArticleView(APIView):
@@ -101,11 +102,14 @@ class UpdateArticleView(APIView):
         serializer = ArticleSerializer(instance=instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({'Response': 'Updated'})
-        return Response(serializer.errors)
+            return Response({'Response': 'Updated'},
+                            status=status.HTTP_200_OK)
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
     # Delete article
     def delete(self, request, pk):
         instance = Article.objects.get(id=pk)
         instance.delete()
-        return Response({'Response': 'Deleted'})
+        return Response({'Response': 'Deleted'},
+                        status=status.HTTP_200_OK)
