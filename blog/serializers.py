@@ -14,12 +14,19 @@ def check_title(value):
         raise serializers.ValidationError({"title": "Title can't be html"})
 
 
+class CheckTitle:
+
+    def __call__(self, value):
+        if value["title"] == "html":
+            raise serializers.ValidationError("This title is invalid")
+
+
 class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
         fields = ('id', 'title', 'text', 'status')
-        validators = [check_title]
+        validators = [CheckTitle()]
 
     def validate(self, attrs):
         if attrs["title"] == attrs["text"]:
