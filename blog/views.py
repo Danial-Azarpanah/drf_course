@@ -113,3 +113,12 @@ class UpdateArticleView(APIView):
         instance.delete()
         return Response({'Response': 'Deleted'},
                         status=status.HTTP_200_OK)
+
+
+class CheckToken(APIView):
+    """
+    View to check TokenAuthentication functionality
+    """
+    def get(self, request):
+        user = request.user
+        return Response({"user": user.username}, status=status.HTTP_200_OK)

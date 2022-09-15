@@ -10,12 +10,17 @@ class UserSerializer(serializers.Serializer):
 
 
 def check_title(value):
+    """
+    Function based validator to prevent the title from being "html"
+    """
     if value["title"] == "html":
         raise serializers.ValidationError({"title": "Title can't be html"})
 
 
 class CheckTitle:
-
+    """
+    Class based validator to prevent the title from being "html"
+    """
     def __call__(self, value):
         if value["title"] == "html":
             raise serializers.ValidationError("This title is invalid")
@@ -29,6 +34,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         validators = [CheckTitle()]
 
     def validate(self, attrs):
+        # Prevent title and text being the same
         if attrs["title"] == attrs["text"]:
             raise serializers.ValidationError("Title and text can not be the same")
         return attrs
