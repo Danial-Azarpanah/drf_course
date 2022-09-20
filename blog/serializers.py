@@ -30,7 +30,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'title', 'text', 'status')
+        fields = ('id', 'title', 'text', 'status', 'user')
         validators = [CheckTitle()]
 
     def validate(self, attrs):
@@ -38,4 +38,10 @@ class ArticleSerializer(serializers.ModelSerializer):
         if attrs["title"] == attrs["text"]:
             raise serializers.ValidationError("Title and text can not be the same")
         return attrs
+
+    # Save new article with user data
+    def create(self, validated_data):
+        request = self.context.get("request")
+        validated_data["user"] = request.user
+        return Article.objects.create(**validated_data)
 
