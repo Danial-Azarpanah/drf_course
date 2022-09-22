@@ -39,9 +39,3 @@ class ArticleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Title and text can not be the same")
         return attrs
 
-    # Save new article with user data
-    def create(self, validated_data):
-        request = self.context.get("request")
-        validated_data["user"] = request.user
-        return Article.objects.create(**validated_data)
-
