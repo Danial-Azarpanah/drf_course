@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .serializers import UserSerializer, ArticleSerializer
+from .permissions import BlocklistPermission
 from .models import Article
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
@@ -80,6 +81,7 @@ class AddArticleView(APIView):
     """
     View for adding new articles
     """
+    permission_classes = [BlocklistPermission]
 
     def post(self, request):
         serializer = ArticleSerializer(data=request.data, context={"request": request})
