@@ -1,12 +1,13 @@
 from django.contrib.auth.models import User
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
 from .serializers import UserSerializer, ArticleSerializer
-from .permissions import BlocklistPermission
+from .permissions import BlocklistPermission, IsOwnerOrReadOnly
 from .models import Article
 
 URL = 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
@@ -95,10 +96,12 @@ class UpdateArticleView(APIView):
     """
     View for updating articles
     """
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
 
     # Edit article
     def put(self, request, pk):
         instance = Article.objects.get(id=pk)
+        self.check_object_permissions(request, instance)
         serializer = ArticleSerializer(instance=instance, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
